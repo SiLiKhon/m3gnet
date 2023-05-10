@@ -246,8 +246,9 @@ class SphericalHarmonicsFunction:
             of angles. The column is arranged following
             `[Y_0^0, Y_1^{-1}, Y_1^{0}, Y_1^1, Y_2^{-2}, ...]`
         """
-        costheta = tf.cast(costheta, dtype=tf.dtypes.complex64)
-        phi = tf.cast(phi, dtype=tf.dtypes.complex64)
+        if self.use_phi:
+            costheta = tf.cast(costheta, dtype=tf.dtypes.complex64)
+            phi = tf.cast(phi, dtype=tf.dtypes.complex64)
         results = tf.stack([func(costheta, phi) for func in self.funcs], axis=1)
         results = tf.cast(results, dtype=DataType.tf_float)
         return results
