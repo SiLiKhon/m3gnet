@@ -45,6 +45,7 @@ class PotentialTrainer:
         stress_loss_ratio: float = 0.1,
         batch_size: int = 32,
         epochs: int = 1000,
+        epoch_offset: int = 0,
         callbacks: List = None,
         save_checkpoint: bool = True,
         early_stop_patience: int = 200,
@@ -198,7 +199,7 @@ class PotentialTrainer:
                 grads = tape.gradient(loss_val, potential.model.trainable_variables)
             return loss_val, grads, pred_list, emae, fmae, smae
 
-        for epoch in range(epochs):
+        for epoch in range(epoch_offset, epochs):
             callback_list.on_epoch_begin(epoch=epoch, logs={"epoch": epoch})
             epoch_loss_avg = tf.keras.metrics.Mean()
             emae_avg = tf.keras.metrics.Mean()
