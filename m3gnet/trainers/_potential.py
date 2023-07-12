@@ -41,6 +41,7 @@ class PotentialTrainer:
         val_forces: List = None,
         val_stresses: List = None,
         loss: tf.keras.losses.Loss = tf.keras.losses.MSE,
+        energy_loss_ratio: float = 1,
         force_loss_ratio: float = 1,
         stress_loss_ratio: float = 0.1,
         batch_size: int = 32,
@@ -148,7 +149,7 @@ class PotentialTrainer:
                 s_loss = _flat_loss(target_batch[2], graph_pred_batch[2])
                 s_metric = _mae(target_batch[2], graph_pred_batch[2])
             return (
-                e_loss + force_loss_ratio * f_loss + stress_loss_ratio * s_loss,
+                energy_loss_ratio * e_loss + force_loss_ratio * f_loss + stress_loss_ratio * s_loss,
                 e_metric,
                 f_metric,
                 s_metric,
@@ -251,7 +252,7 @@ class PotentialTrainer:
 
             epoch_logs.update(
                 **{
-                    "val_MAE": emae_avg.result().numpy()
+                    "val_MAE": energy_loss_ratio * emae_avg.result().numpy()
                     + force_loss_ratio * fmae_avg.result().numpy()
                     + stress_loss_ratio * smae_avg.result().numpy(),
                     "val_MAE(E)": emae_avg.result().numpy(),
